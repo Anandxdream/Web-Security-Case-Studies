@@ -1,0 +1,45 @@
+## Overview
+This lab demonstrates a reflected XSS vulnerability in the application's search feature.
+
+## Vulnerability Type
+Reflected XSS  
+OWASP Top 10 2021 – A03: Injection
+
+## Objective
+Inject JavaScript into the response via user-controlled input.
+
+## Testing Process
+
+The search functionality reflected user input directly into the page response without proper encoding.
+
+To confirm this behavior, I tested with a simple script payload.
+
+## Payload Used
+
+<script>alert(1)</script>
+
+## Result
+
+The script executed immediately when the search results page loaded.
+
+This confirms that the application reflects input directly into the HTML response without sanitization.
+
+## Impact
+
+An attacker could:
+- Steal session cookies
+- Perform actions on behalf of users
+- Deface content
+- Deliver phishing payloads
+
+## Root Cause
+
+- Lack of output encoding
+- No input filtering
+- Direct reflection into HTML context
+
+## Remediation
+
+- Implement proper output encoding
+- Use Content Security Policy (CSP)
+- Validate and sanitize user input
