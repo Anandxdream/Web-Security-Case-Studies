@@ -1,26 +1,51 @@
-# SQL Injection – Authentication Bypass
+# SQL Injection – Login Bypass
+
+## Overview
+This lab demonstrates an authentication bypass caused by improper handling of user-supplied input in a login form.
 
 ## Vulnerability Type
-SQL Injection (OWASP A03:2021 - Injection)
+SQL Injection  
+OWASP Top 10 2021 – A03: Injection
 
 ## Objective
-Bypass login authentication using SQL payload.
+Gain unauthorized access to the application by manipulating the login query.
 
-## Steps to Reproduce
-1. Intercept login request using Burp Suite.
-2. Identify vulnerable parameter (username field).
-3. Inject SQL payload.
+## Testing Process
+
+While testing the login functionality, I intercepted the authentication request using Burp Suite. The application accepted username and password parameters without proper validation.
+
+I modified the `username` parameter and injected a basic SQL payload to test for injection behavior.
 
 ## Payload Used
+
 ' OR 1=1 --
 
+## Result
+
+After forwarding the modified request, the application logged me in without valid credentials.
+
+This indicates that the backend query was likely structured in a way similar to:
+
+SELECT * FROM users WHERE username = '' OR 1=1 --' AND password='...';
+
+The injected condition evaluated to true, bypassing authentication.
+
 ## Impact
-Attacker can bypass authentication and gain unauthorized access.
+
+An attacker can:
+- Bypass authentication
+- Access restricted areas
+- Potentially escalate privileges
 
 ## Root Cause
-Improper input validation and unsanitized user input.
 
-## Mitigation
-- Use parameterized queries (Prepared Statements)
-- Input validation
-- Use ORM frameworks
+- Unsanitized user input
+- Dynamic query construction
+- No parameterized statements
+
+## Remediation
+
+- Use prepared statements
+- Implement input validation
+- Apply least privilege database permissions
+
